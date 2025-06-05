@@ -8,7 +8,7 @@ init(autoreset=True)
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
-def typewriter(text, delay=0.002):
+def typewriter(text, delay):
     for char in text:
         sys.stdout.write(char)
         sys.stdout.flush()
