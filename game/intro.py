@@ -6,28 +6,24 @@ import msvcrt
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
-def typewriter(text, delay):
+def slow_print(text, delay=0.02):
     for char in text:
         print(char, end="", flush=True)
         time.sleep(delay)
     print()
 
 def wait_for_keypress():
-    text = [f"\nPressione ENTER para jogar", "\nPressione ESC para sair"]
-    typewriter(text, 0.075)
+    slow_print("\nPressione ENTER para jogar")
+    slow_print("Pressione ESC para sair")
 
     while True:
         key = msvcrt.getch()
-        if key == b'\r':   # ENTER
+        if key == b'\r': # ENTER
             return True
-        elif key == b'\x1b':  # ESC
+        elif key == b'\x1b': # ESC
             clear_screen()
-            # Show exit message, then close window
             print("Saindo do jogo...")
             time.sleep(2)
-            # Close the window immediately
-            import ctypes
-            ctypes.windll.user32.PostQuitMessage(0)
             sys.exit()
 
 def show_intro():
@@ -39,7 +35,7 @@ def show_intro():
     with open(banner_path, "r", encoding="utf-8") as f:
         title_art = f.read()
 
-    typewriter(title_art, delay=0.0015)
+    slow_print(title_art, delay=0.0015)
 
     if wait_for_keypress():
         clear_screen()
