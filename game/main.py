@@ -1,51 +1,54 @@
 import ctypes
 import os
 import time
-from intro import show_intro, clear_screen, typewriter
+from intro import show_intro, clear_screen, slow_print
+from character_creation import get_player_name, Character
 
-# Jogo executado no CMD
-def maximize_cmd():
-    os.system('mode con: cols=120 lines=40')  # Aumenta o tamanho do buffer
+def maximize_cmd(): # CMD
+    os.system('mode con: cols=120 lines=40')
     kernel32 = ctypes.WinDLL('kernel32')
     user32 = ctypes.WinDLL('user32')
     hWnd = kernel32.GetConsoleWindow()
-    user32.ShowWindow(hWnd, 3)  # 3 = SW_MAXIMIZE
+    user32.ShowWindow(hWnd, 3)
 
-# Mostra a introdução com arte
 maximize_cmd()
 show_intro()
 
-# Começa a narrativa
-player = input("Digite seu nickname: ").upper()
+# Usa a função para obter nome e confirmação
+player_name = get_player_name()
+
+# Cria o personagem
+character = Character(player_name)
+
 clear_screen()
 
 time.sleep(3)
-text = f"No castelo de Zollern, vivia o Conde Bauyreth. Ele era um velho homem justo, que tratava seu povo com dignidade."
-typewriter(text, 0.075)
-time.sleep(6)
-print(f"O Conde Bauyreth era um homem humilde, que não se importava com casamentos arranjados.")
-time.sleep(8)
-print(f"Uma vez, durante um baile da realeza aberto para os camponeses do condado, ele avistou uma jovem garota, Genevieve.")
-print(f"Uma vez, durante um baile da realeza aberto para os camponeses do condado, ele avistou uma jovem garota.")
+slow_print("No castelo de Zollern, vivia o Conde Bauyreth. Ele era um velho homem justo, que tratava seu povo com dignidade.")
+time.sleep(5)
+slow_print("O Conde Bauyreth era um homem humilde, que não se importava com casamentos arranjados.")
+time.sleep(3)
+slow_print("Uma vez, durante um baile da realeza aberto para os camponeses do condado, ele avistou uma jovem garota, Genevieve.")
+time.sleep(2)
+slow_print("Ele se apaixonou naquele instante. No entanto, ela era filha de um ferreiro.")
       
-print(f"SENTINELA: Vamos, {player}! Temos que sair daqui!")
+slow_print(f"SENTINELA: Vamos, {player_name}! Temos que sair daqui!")
 time.sleep(5)
-print(f"{player}: Calma Guijnowin, temos que defender o castelo.")
+slow_print(f"{player_name}: Calma Guijnowin, temos que defender o castelo.")
 time.sleep(5)
-print(f"GUIJNOWIN: Desculpa, mas você não quis me escutar.")
+slow_print(f"GUIJNOWIN: Desculpa, mas você não quis me escutar.")
 time.sleep(5)
-print(f"GUIJNOWIN empurra {player}, que acaba caindo da muralha e perde a consciência no rio...")
+slow_print(f"GUIJNOWIN empurra {player_name}, que acaba caindo da muralha e perde a consciência no rio...")
 time.sleep(10)
 clear_screen()
 time.sleep(2)
 
-print(f"DESCONHECIDO: Você está bem? Como veio parar aqui?")
+slow_print(f"DESCONHECIDO: Você está bem? Como veio parar aqui?")
 time.sleep(5)
-print(f"DESCONHECIDO: Vamos, você precisa repousar.")
+slow_print(f"DESCONHECIDO: Vamos, você precisa repousar.")
 time.sleep(3)
-print(f"{player}: U-ugh.")
+slow_print(f"{player_name}: U-ugh.")
 time.sleep(2)
-print(f"{player} é carregado para algum lugar...")
+slow_print(f"{player_name} é carregado para algum lugar...")
 time.sleep(5)
-print(f"{player}: Onde... onde eu estou?")
-print(f"DESCONHECIDO: Você está a salvo meu amigo, mas me deve explicações.")
+slow_print(f"{player_name}: Onde... onde eu estou?")
+slow_print(f"DESCONHECIDO: Você está a salvo meu amigo, mas me deve explicações.")
