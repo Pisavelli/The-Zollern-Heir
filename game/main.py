@@ -6,7 +6,7 @@ from character_creation import get_player_name
 from character_creation import PlayerCharacter
 
 def maximize_cmd():  # Maximiza o terminal
-    os.system('mode con: cols=120 lines=40')
+    os.system('mode con: cols=100 lines=30') # largura x altura
     kernel32 = ctypes.WinDLL('kernel32')
     user32 = ctypes.WinDLL('user32')
     hWnd = kernel32.GetConsoleWindow()
@@ -24,20 +24,18 @@ character.display_character()
 
 # Narrativa principal do jogo
 time.sleep(3)
-slow_print("No castelo de Zollern, vivia o Conde Bauyreth. Ele era um velho homem justo, que tratava seu povo com dignidade.")
-time.sleep(5)
-slow_print("O Conde Bauyreth era um homem humilde, que não se importava com casamentos arranjados.")
-time.sleep(3)
-slow_print("Uma vez, durante um baile da realeza aberto para os camponeses do condado, ele avistou uma jovem garota, Genevieve.")
-time.sleep(2)
-slow_print("Ele se apaixonou naquele instante. No entanto, ela era filha de um ferreiro.")
-time.sleep(2)
-slow_print("Conde Bauyreth logo buscou benção de seu pai, no qual aceitou na hora.")
-time.sleep(2)
-slow_print("Muitas pessoas tinham inveja de Genevieve, almejando seu lugar como Condessa.")
-time.sleep(2)
-slow_print("Muitas pessoas tinham inveja de Genevieve, almejando seu lugar como Condessa.")
+introducao = [
+    "No castelo de Zollern, vivia o Conde Bauyreth. Ele era um velho homem justo, que tratava seu povo com dignidade.",
+    "O Conde Bauyreth era um homem humilde, que não se importava com casamentos arranjados.",
+    "Uma vez, durante um baile da realeza aberto para os camponeses do condado, ele avistou uma jovem garota, Genevieve.",
+    "Ele se apaixonou naquele instante. No entanto, ela era filha de um ferreiro.",
+    "Conde Bauyreth logo buscou benção de seu pai, no qual aceitou na hora.",
+    "Muitas pessoas tinham inveja de Genevieve, almejando seu lugar como Condessa."
+]
 
+for linha in introducao:
+    slow_print(linha)
+    time.sleep(5)
 
 slow_print(f"SENTINELA: Vamos, {character.name}! Temos que sair daqui!")
 time.sleep(5)

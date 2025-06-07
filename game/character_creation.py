@@ -61,11 +61,15 @@ class PlayerCharacter:
         print("-" * 40)
 
     def display_character(self):
-        print(f"\nPersonagem: {self.name}")
+        print(f"Personagem: {self.name}")
         print("Atributos:")
         for attr, val in self.attributes.items():
             print(f"  {attr}: {val}")
         print(f"Pontos disponíveis para distribuir: {self.available_points}")
+        
+        # Limpa a tela após exibir os atributos
+        input("\nPressione ENTER para continuar...")
+        clear_screen()
 
     def distribute_points(self):
         # Distribuição dos pontos após subir de nível
@@ -99,12 +103,12 @@ class PlayerCharacter:
 
 def get_player_name():
     while True:
-        name = input("Digite o nome do personagem: ").strip()
+        name = input("Digite o nome do personagem: ").strip().upper()
         if not name:
             print("Nome inválido, tente novamente.")
             continue
 
-        confirm = input(f"Você digitou '{name}'. Está correto? (y/n): ").strip().upper()
+        confirm = input(f"Você digitou '{name}'. Está correto? (y/n): ").strip().lower()
         if confirm == 'y':
             return name.upper()
         elif confirm == 'n':
