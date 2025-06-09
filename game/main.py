@@ -116,16 +116,16 @@ def main():
                         time.sleep(1)
                         clear_screen()
 
-                    slow_print(player)
-                    clear_screen()
-                    slow_print(f"Bem-vindo, {player}.")
-                    time.sleep(3)
-                    clear_screen()
+                slow_print(player)
+                clear_screen()
+                slow_print(f"Bem-vindo, {player}.")
+                time.sleep(3)
+                clear_screen()
 
-                    menu = False
-                    play = True
-                    checkpoint, play, menu = narrativa(player, Health, Attack, Ducats, x, y, checkpoint) # Começa a narrativa após o jogador iniciar o jogo
-                    break
+                menu = False
+                play = True
+                checkpoint, play, menu = narrativa(player, Health, Attack, Ducats, x, y, checkpoint) # Começa a narrativa após o jogador iniciar o jogo
+                break
 
             elif key == b'2':
                 clear_screen()
@@ -216,14 +216,14 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
         # Após o prólogo, limpa a tela
         clear_screen()
 
-        checkpoint = "introducao"
+        checkpoint = "introducao_parte1"
         save(player, Health, Attack, Ducats, x, y, checkpoint)
 
-    if checkpoint == "introducao":
+    if checkpoint == "introducao_parte1":
         time.sleep(3)
 
-        # INTRODUÇÃO
-        introducao = [
+        # INTRODUÇÃO - PARTE 1
+        introducao_parte1 = [
             f"DESCONHECIDO: Vamos, {player}! Temos que sair daqui!",
             f"{player}: Calma Guijnowin, ainda temos chance.",
             "GUIJNOWIN: Chance? Você deveria ir enquanto há tempo! Vai!",
@@ -234,8 +234,22 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
             f"GUIJNOWIN dá um chute em seu tórax, que faz você cair da muralha em direção ao rio.",
             "Você perde consciência.",
             ]
+        # Imprime a introdução parte 1 linha por linha
+        for linha in introducao_parte1:
+            slow_print(linha)
+            time.sleep(3)
+
+        # Após a introdução, limpa a tela
         clear_screen()
-        introducao = [
+
+        checkpoint = "introducao_parte2"
+        save(player, Health, Attack, Ducats, x, y, checkpoint)
+    
+    if checkpoint == "introducao_parte2":
+        time.sleep(3)
+
+        # INTRODUÇÃO - PARTE 2
+        introducao_parte2 = [
             "Você ouve algo.",
             "DESCONHECIDO: Você está bem? Como veio parar aqui?",
             "DESCONHECIDO: Vamos, você precisa repousar.",
@@ -245,8 +259,8 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
             "DESCONHECIDO: Você está a salvo meu amigo, mas me deve explicações."
         ]
         
-        # Imprime a introdução linha por linha
-        for linha in introducao:
+        # Imprime a introdução parte 2 linha por linha
+        for linha in introducao_parte2:
             slow_print(linha)
             time.sleep(3)
             
@@ -279,6 +293,7 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
         draw()
         
         while True:
+            pressed = None # <- Garante que 'pressed' existe sempre
             if msvcrt.kbhit():
                 pressed = msvcrt.getch() # Get a tecla que é pressionada pelo usuário
                 
@@ -289,15 +304,15 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
                     time.sleep(2)
                     return checkpoint, False, True # play=False, menu=True
             
-            elif pressed == b'1':
-                clear_screen()
-                slow_print(f"{player}: Quem é você?")
-                break
+                elif pressed == b'1':
+                    clear_screen()
+                    slow_print(f"{player}: Quem é você?")
+                    break
             
-            elif pressed == b'2':
-                clear_screen()
-                slow_print(f"{player}: Onde estou?")
-                break
+                elif pressed == b'2':
+                    clear_screen()
+                    slow_print(f"{player}: Onde estou?")
+                    break
 
     return checkpoint, True, False # Continua jogando
 main()
