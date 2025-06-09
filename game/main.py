@@ -124,19 +124,19 @@ def main():
                         time.sleep(2)
                         close_cmd_window()
                                                     
-                while play:
-                    save(player, Health, Attack, Ducats, x, y, key, checkpoint) # Autosave
-                    
-                    draw()
-                    slow_print("SALVAR E SAIR - ESC")
-                    draw()
-                    
-                    if msvcrt.kbhit():
-                        esc_key = msvcrt.getch()
-                        if esc_key == b'\x1b': # ESC
-                            save(player, Health, Attack, Ducats, x, y, key, checkpoint)
-                            play = False
-                            menu = True
+        while play:
+            save(player, Health, Attack, Ducats, x, y, key, checkpoint) # Autosave
+            
+            draw()
+            slow_print("SALVAR E SAIR - ESC")
+            draw()
+            
+            if msvcrt.kbhit():
+                esc_key = msvcrt.getch()
+                if esc_key == b'\x1b': # ESC
+                    save(player, Health, Attack, Ducats, x, y, key, checkpoint)
+                    play = False
+                    menu = True
 
 # Narrativa principal do jogo após iniciar o jogo no play
 clear_screen()
