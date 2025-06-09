@@ -1,8 +1,4 @@
-import os
-import sys
-import time
-import msvcrt
-import ctypes
+import os, sys, time, msvcrt, ctypes
 
 def clear_screen(): # Limpa a tela
     os.system("cls" if os.name == "nt" else "clear")

@@ -1,6 +1,6 @@
 import os
 
-def save(player, health, attack):
+def save(player, Health, Attack, Ducats, x, y, key):
     # Obtém o diretório onde o script está sendo executado
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -17,8 +17,12 @@ def save(player, health, attack):
     # Lista com os dados a serem salvos
     list = [
         player,
-        str(health),
-        str(attack),
+        str(Health),
+        str(Attack),
+        str(Ducats),
+        str(x),
+        str(y),
+        str(key)
     ]
 
     # Abre o arquivo e escreve os dados
