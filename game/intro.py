@@ -17,10 +17,15 @@ def close_cmd_window(): # Fecha completamente a janela do CMD (Windows)
     hWnd = kernel32.GetConsoleWindow()
     user32.PostMessageW(hWnd, 0x0010, 0, 0)  # Envia mensagem WM_CLOSE (fechar janela)
 
+def draw():
+    slow_print("────────────────────────")
+
 def wait_for_keypress():
-    opcoes = ["\n> Pressione ENTER para continuar", "> Pressione ESC para sair"]
+    draw()
+    opcoes = ["> Pressione ENTER para continuar", "> Pressione ESC para sair"]
     for linha in opcoes:
         slow_print(linha)
+    draw()
 
     while True:
         key = msvcrt.getch() # Get a tecla que é pressionada pelo usuário

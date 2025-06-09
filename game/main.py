@@ -31,7 +31,7 @@ def cmd_window(cols=130, lines=50):
     ctypes.windll.user32.MoveWindow(hWnd, x, y, window_width, window_height, True)
 
 def draw():
-    print("────────────────────────")
+    slow_print("────────────────────────")
 
 # Função principal do jogo
 def main():
@@ -53,16 +53,16 @@ def main():
 
     while run:
         while menu: # Exibe o menu
-            clear_screen() # Limpa a tela antes de desenhar o menu
-            draw()
-            slow_print("1 - NOVO JOGO")
-            slow_print("2 - CARREGAR JOGO")
-            slow_print("3 - SOBRE")
-            draw()
-            slow_print("ESC - SAIR")
-            draw()
-
             while True:
+                clear_screen() # Limpa a tela antes de desenhar o menu
+                draw()
+                slow_print("1 - NOVO JOGO")
+                slow_print("2 - CARREGAR JOGO")
+                slow_print("3 - SOBRE")
+                draw()
+                slow_print("ESC - SAIR")
+                draw()
+
                 if msvcrt.kbhit():
                     key = msvcrt.getch()
 
@@ -115,8 +115,10 @@ def main():
                                 if sub_key == b'\x1b': # ESC
                                     submenu = False
                                     clear_screen()
+                                    while msvcrt.kbhit():
+                                        msvcrt.getch()
                                     break
-                        break
+                        break # Força o loop while menu a reiniciar, redesenhando o menu
 
                     elif key == b'\x1b': # ESC
                         clear_screen()
