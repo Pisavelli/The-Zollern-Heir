@@ -40,6 +40,7 @@ def main():
     play = False
     about = False
     key = False
+    checkpoint = "prologo" # Checkpoint inicial
 
     # Status do jogador
     Health = 12
@@ -83,19 +84,19 @@ def main():
                 menu = False
                 play = True
                 clear_screen()
-                narrativa(player, Health, Attack, Ducats, x, y, key) # Começa a narrativa após o jogador iniciar o jogo
+                checkpoint, play, menu = narrativa(player, Health, Attack, Ducats, x, y, key, checkpoint) # Começa a narrativa após o jogador iniciar o jogo
 
             elif choice == "2":
                 clear_screen()
 
-                player, Health, Attack, Ducats, x, y, key = load()
+                player, Health, Attack, Ducats, x, y, key, checkpoint = load()
                 slow_print(f"Bem-vindo novamente, {player}.")
                 slow_print(input("> Pressione ENTER para continuar... "))
                 clear_screen()
 
                 menu = False
                 play = True
-                narrativa(player, Health, Attack, Ducats, x, y, key) # Começa a narrativa ao carregar o jogo
+                checkpoint, play, menu = narrativa(player, Health, Attack, Ducats, x, y, key, checkpoint) # Começa a narrativa ao carregar o jogo
 
             elif choice == "3":
                 clear_screen()
@@ -120,7 +121,7 @@ def main():
                 close_cmd_window()
 
         while play:
-            save(player, Health, Attack, Ducats, x, y, key)  # Autosave
+            save(player, Health, Attack, Ducats, x, y, key, checkpoint)  # Autosave
 
             draw()
             slow_print("SALVAR E SAIR - ESC")
@@ -131,102 +132,118 @@ def main():
             if dest == b'\x1b':  # ESC
                 play = False
                 menu = True
-                save(player, Health, Attack, Ducats, x, y, key)
+                save(player, Health, Attack, Ducats, x, y, key, checkpoint)
 
 
 
 # Narrativa principal do jogo após iniciar o jogo no play
 clear_screen()
-def narrativa(player, Health, Attack, Ducats, x, y, key):
-    time.sleep(3)
-    prologo = [
-        "No castelo de Zollern, vivia o Conde Bauyreth. Ele era um homem justo, que tratava seu povo com dignidade.",
-        "O Conde Bauyreth era um homem humilde, que não se importava com casamentos arranjados.",
-        "Uma vez, durante um baile da realeza aberto para os camponeses do condado, ele avistou uma jovem garota, Genevieve.",
-        "Ele se apaixonou naquele instante. No entanto, ela era filha de um ferreiro.",
-        "Conde Bauyreth logo buscou benção de seu pai, o qual aceitou na hora.",
-        "Muitas pessoas tinham inveja de Genevieve, almejando seu lugar como Condessa, os nobres sentiam nojo.",
-        "Com o tempo, o Conde foi perdendo seu apoio e seus nobres planejavam esquemas de usurpar suas terras e seu título.",
-        "Genevieve ficou grávida de um filho de Conde Bauyreth e, no momento do parto, acabou falecendo.",
-        "A criança desse casamento ficaria isolada até seus 18 anos. O povo e os nobres nunca viram a criança após o nascimento."
-    ]
-
-    # Imprime a introdução linha por linha com a função centered_line()
-    for linha in prologo:
-        slow_print(linha)
+def narrativa(player, Health, Attack, Ducats, x, y, key, checkpoint):
+    if checkpoint == "prologo":
         time.sleep(3)
 
-    # Após a introdução, limpa a tela
-    clear_screen()
+        # PRÓLOGO
+        prologo = [
+            "No castelo de Zollern, vivia o Conde Bauyreth. Ele era um homem justo, que tratava seu povo com dignidade.",
+            "O Conde Bauyreth era um homem humilde, que não se importava com casamentos arranjados.",
+            "Uma vez, durante um baile da realeza aberto para os camponeses do condado, ele avistou uma jovem garota, Genevieve.",
+            "Ele se apaixonou naquele instante. No entanto, ela era filha de um ferreiro.",
+            "Conde Bauyreth logo buscou benção de seu pai, o qual aceitou na hora.",
+            "Muitas pessoas tinham inveja de Genevieve, almejando seu lugar como Condessa, os nobres sentiam nojo.",
+            "Com o tempo, o Conde foi perdendo seu apoio e seus nobres planejavam esquemas de usurpar suas terras e seu título.",
+            "Genevieve ficou grávida de um filho de Conde Bauyreth e, no momento do parto, acabou falecendo.",
+            "A criança desse casamento ficaria isolada até seus 18 anos. O povo e os nobres nunca viram a criança após o nascimento."
+            ]
+        
+        # Imprime o prólogo linha por linha
+        for linha in prologo:
+            slow_print(linha)
+            time.sleep(3)
 
-    slow_print(f"DESCONHECIDO: Vamos, {player}! Temos que sair daqui!")
-    time.sleep(3)
-    slow_print(f"{player}: Calma Guijnowin, ainda temos chance.")
-    time.sleep(3)
-    slow_print("GUIJNOWIN: Chance? Você deveria ir enquanto há tempo! Vai!")
-    time.sleep(3)
-    slow_print(f"{player}: Temos vantagem defensiva, só precisamos esperar os reforços chegarem!")
-    time.sleep(3)
-    slow_print("GUIJNOWIN: Não acredito que os reforços cheguem. Além disso, nós dois não seguraremos o castelo sozinhos.")
-    time.sleep(3)
-    slow_print(f"GUIJNOWIN: {player}, você me agradecerá depois.")
-    time.sleep(3)
-    slow_print(f"{player}: O quê?")
-    time.sleep(3)
-    slow_print(f"GUIJNOWIN dá um chute em seu tórax, que faz você cair da muralha em direção ao rio.")
-    time.sleep(3)
-    slow_print("Você perde consciência.")
-    time.sleep(3)
-    clear_screen()
-    time.sleep(3)
-
-    slow_print("DESCONHECIDO: Você está bem? Como veio parar aqui?")
-    time.sleep(5)
-    slow_print("DESCONHECIDO: Vamos, você precisa repousar.")
-    time.sleep(3)
-    slow_print(f"{player} é carregado para algum lugar...")
-    time.sleep(2)
-    slow_print(f"{player}: U-ugh.")
-    time.sleep(3)
-    slow_print(f"{player}: Onde... onde eu estou?")
-    time.sleep(3)
-    slow_print("DESCONHECIDO: Você está a salvo meu amigo, mas me deve explicações.")
-    time.sleep(3)
-    clear_screen()
-    time.sleep(3)
-
-    introducao = [
-        "Você sente cheiro de comida.",
-        "DESCONHECIDO: Bom dia, levante-se e venha comer.",
-        "Você levanta da cama, vai em direção a mesa e senta na cadeira."
-    ]
-    for linha in introducao:
-        slow_print(linha)
-        time.sleep(3)
-
-    save(player, Health, Attack, Ducats, x, y, key)
-
-    draw()
-    slow_print("1 - QUEM É VOCÊ?")
-    slow_print("2 - ONDE EU ESTOU?")
-    slow_print("ESC - SALVAR E SAIR")
-    draw()
-
-    choice = input("> ")
-    
-    if choice == "1":
+        # Após o prólogo, limpa a tela
         clear_screen()
-        slow_print(f"{player}: Quem é você?")
-        
-    elif choice == "2":
-        pass
 
-    elif choice == "3":
-        dest = msvcrt.getch()
-        
-        if dest == b'\x1b':  # ESC
-            play = False
-            menu = True
-            save(player, Health, Attack, Ducats, x, y, key)
+        checkpoint = "introducao"
+        save(player, Health, Attack, Ducats, x, y, key, checkpoint)
 
+    if checkpoint == "introducao":
+        time.sleep(3)
+
+        # INTRODUÇÃO
+        introducao = [
+            f"DESCONHECIDO: Vamos, {player}! Temos que sair daqui!",
+            f"{player}: Calma Guijnowin, ainda temos chance.",
+            "GUIJNOWIN: Chance? Você deveria ir enquanto há tempo! Vai!",
+            f"{player}: Temos vantagem defensiva, só precisamos esperar os reforços chegarem!",
+            "GUIJNOWIN: Não acredito que os reforços cheguem. Além disso, nós dois não seguraremos o castelo sozinhos.",
+            f"GUIJNOWIN: {player}, você me agradecerá depois.",
+            f"{player}: O quê?",
+            f"GUIJNOWIN dá um chute em seu tórax, que faz você cair da muralha em direção ao rio.",
+            "Você perde consciência.",
+            ]
+        clear_screen()
+        introducao = [
+            "Você ouve algo.",
+            "DESCONHECIDO: Você está bem? Como veio parar aqui?",
+            "DESCONHECIDO: Vamos, você precisa repousar.",
+            f"Você é carregado para algum lugar...",
+            f"{player}: U-ugh.",
+            f"{player}: Onde... onde eu estou?",
+            "DESCONHECIDO: Você está a salvo meu amigo, mas me deve explicações."
+        ]
+        
+        # Imprime a introdução linha por linha
+        for linha in introducao:
+            slow_print(linha)
+            time.sleep(3)
+            
+        # Após a introdução, limpa a tela
+        clear_screen()
+
+        checkpoint =  "inicio"
+        save(player, Health, Attack, Ducats, x, y, key, checkpoint)
+
+    if checkpoint == "inicio":
+        time.sleep(3)
+
+        # INÍCIO DO JOGO
+        inicio = [
+            "Você sente cheiro de comida.",
+            "DESCONHECIDO: Bom dia, levante-se e venha comer.",
+            "Você levanta da cama, vai em direção a mesa e senta na cadeira."
+            ]
+        
+        # Imprime o início linha por linha
+        for linha in inicio:
+            slow_print(linha)
+            time.sleep(3)
+            
+        draw()
+        slow_print("1 - QUEM É VOCÊ?")
+        slow_print("2 - ONDE EU ESTOU?")
+        draw()
+        slow_print("ESC - SALVAR E VOLTAR AO MENU")
+        draw()
+        
+        while True:
+            if msvcrt.kbhit():
+                key = msvcrt.getch() # Get a tecla que é pressionada pelo usuário
+                if key == b'\x1b': # ESC
+                    clear_screen()
+                    print("Salvando e voltando ao menu...")
+                    time.sleep(2)
+                    save(player, Health, Attack, Ducats, x, y, key, checkpoint)
+                    return checkpoint, False, True # play=False, menu=True
+            
+            elif key == b'1':
+                clear_screen()
+                slow_print(f"{player}: Quem é você?")
+                break
+            
+            elif key == b'2':
+                clear_screen()
+                slow_print(f"{player}: Onde estou?")
+                break
+
+    return checkpoint, True, False # Continua jogando
 main()

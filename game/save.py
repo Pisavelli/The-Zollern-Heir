@@ -1,6 +1,6 @@
 import os
 
-def save(player, Health, Attack, Ducats, x, y, key):
+def save(player, Health, Attack, Ducats, x, y, key, checkpoint):
     # Obtém o diretório onde o script está sendo executado
     base_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -22,7 +22,8 @@ def save(player, Health, Attack, Ducats, x, y, key):
         str(Ducats),
         str(x),
         str(y),
-        str(key)
+        str(key),
+        str(checkpoint)
     ]
 
     # Abre o arquivo e escreve os dados
@@ -49,7 +50,12 @@ def load():
 
     # Processa os dados lidos
     player = load_list[0].strip()
-    health = int(load_list[1].strip())
-    attack = int(load_list[2].strip())
+    Health = int(load_list[1].strip())
+    Attack = int(load_list[2].strip())
+    Ducats = int(load_list[3].strip())
+    x = int(load_list[4].strip())
+    y = int(load_list[5].strip())
+    key = load_list[6].strip()
+    checkpoint = load_list[7].strip()
 
-    return player, health, attack
+    return player, Health, Attack, Ducats, x, y, key, checkpoint
