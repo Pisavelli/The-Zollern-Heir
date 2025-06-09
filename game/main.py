@@ -62,29 +62,30 @@ def main():
             slow_print("4 - SAIR")
             draw()
 
-            choice = input("> ")
-
-            if choice == "1":
-                clear_screen()
-
-                while True:
-                    player = input("Qual seu nome?\n> ").strip()
-                    if player:
-                        break
-                    else:
-                        slow_print("Por favor, insira um nome válido.")
-                        time.sleep(1)
+            while True:
+                if msvcrt.kbhit():
+                    key = msvcrt.getch()
+                    if key == b'1':
                         clear_screen()
 
-                slow_print(player)
-                clear_screen()
-                slow_print(f"Bem-vindo, {player}.")
-                time.sleep(3)
+                        while True:
+                            player = input("Qual seu nome?\n").strip()
+                            if player:
+                                break
+                            else:
+                                slow_print("Por favor, insira um nome válido.")
+                                time.sleep(1)
+                                clear_screen()
 
-                menu = False
-                play = True
-                clear_screen()
-                checkpoint, play, menu = narrativa(player, Health, Attack, Ducats, x, y, key, checkpoint) # Começa a narrativa após o jogador iniciar o jogo
+                        slow_print(player)
+                        clear_screen()
+                        slow_print(f"Bem-vindo, {player}.")
+                        time.sleep(3)
+
+                        menu = False
+                        play = True
+                        clear_screen()
+                        checkpoint, play, menu = narrativa(player, Health, Attack, Ducats, x, y, key, checkpoint) # Começa a narrativa após o jogador iniciar o jogo.
 
             elif choice == "2":
                 clear_screen()
