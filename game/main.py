@@ -38,7 +38,6 @@ def main():
     run = True
     menu = True
     play = False
-    key = False
     checkpoint = "prologo" # Checkpoint inicial
 
     # Status do jogador
@@ -85,12 +84,12 @@ def main():
 
                         menu = False
                         play = True
-                        checkpoint, play, menu = narrativa(player, Health, Attack, Ducats, x, y, key, checkpoint) # Começa a narrativa após o jogador iniciar o jogo
+                        checkpoint, play, menu = narrativa(player, Health, Attack, Ducats, x, y, checkpoint) # Começa a narrativa após o jogador iniciar o jogo
                         break
 
                     elif key == b'2':
                         clear_screen()
-                        player, Health, Attack, Ducats, x, y, key, checkpoint = load()
+                        player, Health, Attack, Ducats, x, y, checkpoint = load()
                         slow_print(f"Bem-vindo novamente, {player}.")
                         slow_print(input("> Pressione ENTER para continuar... "))
                         clear_screen()
@@ -118,7 +117,7 @@ def main():
                         return # Finaliza o jogo corretamente
                                                     
         while play:
-            save(player, Health, Attack, Ducats, x, y, key, checkpoint) # Autosave
+            save(player, Health, Attack, Ducats, x, y, checkpoint) # Autosave
             
             draw()
             slow_print("SALVAR E SAIR - ESC")
@@ -127,7 +126,7 @@ def main():
             if msvcrt.kbhit():
                 esc_key = msvcrt.getch()
                 if esc_key == b'\x1b': # ESC
-                    save(player, Health, Attack, Ducats, x, y, key, checkpoint)
+                    save(player, Health, Attack, Ducats, x, y, checkpoint)
                     clear_screen()
                     print("Salvando e voltando ao menu...")
                     time.sleep(2)
@@ -136,8 +135,7 @@ def main():
                     break # Sai do while play
 
 # Narrativa principal do jogo após iniciar o jogo no play
-clear_screen()
-def narrativa(player, Health, Attack, Ducats, x, y, key, checkpoint):
+def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
     if checkpoint == "prologo":
         time.sleep(3)
 
@@ -163,7 +161,7 @@ def narrativa(player, Health, Attack, Ducats, x, y, key, checkpoint):
         clear_screen()
 
         checkpoint = "introducao"
-        save(player, Health, Attack, Ducats, x, y, key, checkpoint)
+        save(player, Health, Attack, Ducats, x, y, checkpoint)
 
     if checkpoint == "introducao":
         time.sleep(3)
@@ -200,7 +198,7 @@ def narrativa(player, Health, Attack, Ducats, x, y, key, checkpoint):
         clear_screen()
 
         checkpoint =  "inicio"
-        save(player, Health, Attack, Ducats, x, y, key, checkpoint)
+        save(player, Health, Attack, Ducats, x, y, checkpoint)
 
     if checkpoint == "inicio":
         time.sleep(3)
@@ -226,20 +224,21 @@ def narrativa(player, Health, Attack, Ducats, x, y, key, checkpoint):
         
         while True:
             if msvcrt.kbhit():
-                key = msvcrt.getch() # Get a tecla que é pressionada pelo usuário
-                if key == b'\x1b': # ESC
-                    save(player, Health, Attack, Ducats, x, y, key, checkpoint)
+                pressed = msvcrt.getch() # Get a tecla que é pressionada pelo usuário
+                
+                if pressed == b'\x1b': # ESC
+                    save(player, Health, Attack, Ducats, x, y, checkpoint)
                     clear_screen()
                     print("Salvando e voltando ao menu...")
                     time.sleep(2)
                     return checkpoint, False, True # play=False, menu=True
             
-            elif key == b'1':
+            elif pressed == b'1':
                 clear_screen()
                 slow_print(f"{player}: Quem é você?")
                 break
             
-            elif key == b'2':
+            elif pressed == b'2':
                 clear_screen()
                 slow_print(f"{player}: Onde estou?")
                 break
