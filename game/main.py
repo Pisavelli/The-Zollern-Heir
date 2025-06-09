@@ -108,7 +108,7 @@ def main():
             if key == b'1':
                 clear_screen()
                 while True:
-                    player = input("Qual seu nome?\n").strip()
+                    player = slow_print(input("Qual seu nome?\n")).strip()
                     if player:
                         break
                     else:
@@ -131,7 +131,10 @@ def main():
                 clear_screen()
                 player, Health, Attack, Ducats, x, y, checkpoint = load()
                 slow_print(f"Bem-vindo novamente, {player}.")
-                slow_print(input("> Pressione ENTER para continuar... "))
+                slow_print("> Pressione qualquer tecla para continuar...")
+                while not msvcrt.kbhit():
+                    time.sleep(0.05)
+                msvcrt.getch()
                 clear_screen()
 
                 menu = False
@@ -182,7 +185,7 @@ def main():
                     break # Sai do while play
 
             # Opção de pausa
-            if msvcrt.kbhit():
+            elif msvcrt.kbhit():
                 key = msvcrt.getch()
                 if key == b'P': # Tecla de Pausa
                     if not pause_menu(player, Health, Attack, Ducats, x, y, checkpoint):
