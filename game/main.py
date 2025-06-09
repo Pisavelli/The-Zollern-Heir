@@ -165,6 +165,10 @@ def main():
                 time.sleep(2)
                 close_cmd_window()
                 return # Finaliza o jogo corretamente
+            
+            else:
+                print("Opção inválida. Tente novamente.")
+                time.sleep(2)
                                                     
         while play:
             draw()
