@@ -3,13 +3,11 @@ import os, sys, time, msvcrt, ctypes
 def clear_screen(): # Limpa a tela
     os.system("cls" if os.name == "nt" else "clear")
 
-def slow_print(text, delay=0.02): # Efeito de escrita
-    lines = text.split("\n")
-    for line in lines:
-        for char in line:
-            print(char, end="", flush=True)
-            time.sleep(delay)
-        print()
+def slow_print(text, speed_factor=1.0): # Efeito de escrita
+    for char in text:
+        print(char, end="", flush=True)
+        time.sleep(0.05 * speed_factor)
+    print()
 
 def close_cmd_window(): # Fecha completamente a janela do CMD (Windows)
     kernel32 = ctypes.windll.kernel32

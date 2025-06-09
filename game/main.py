@@ -43,6 +43,40 @@ def show_menu():
     slow_print("ESC - SAIR")
     draw()
 
+def save_and_return_to_menu(player, Health, Attack, Ducats, x, y, checkpoint):
+    save(player, Health, Attack, Ducats, x, y, checkpoint) # Save
+    clear_screen()
+    slow_print("Salvando e voltando ao menu...")
+    time.sleep(2)
+    return "menu", False, True # play=False, menu=True
+
+def pause_menu(player, Health, Attack, Ducats, x, y, checkpoint):
+    while True:
+        clear_screen()
+        draw()
+        slow_print("PAUSA")
+        draw()
+        slow_print("1 - CONTINUAR")
+        slow_print("2 - SALVAR")
+        slow_print("3 - CARREGAR")
+        slow_print("ESC - VOLTAR AO MENU")
+        draw()
+
+        if msvcrt.kbhit():
+            key = msvcrt.getch()
+            if key == b'1': # Continuar
+                return True
+            elif key == b'2': # Salvar
+                save(player, Health, Attack, Ducats, x, y, checkpoint)
+                slow_print("Jogo salvo!")
+                time.sleep(1)
+            elif key == b'3': # Carregar
+                player, Health, Attack, Ducats, x, y, checkpoint = load()
+                slow_print(f"Jogo carregado, {player}.")
+                time.sleep(2)
+            elif key == b'\x1b': # ESC
+                return False  # Retorna ao menu principal
+
 # Função principal do jogo
 def main():
     run = True
@@ -64,12 +98,10 @@ def main():
     while run:
         while menu: # Exibe o menu
             show_menu()
+
             # Espera até alguma tecla ser pressionada
             while not msvcrt.kbhit():
                 time.sleep(0.05)
-
-            if not menu:
-                break # Permite sair do menu se necessário
 
             key = msvcrt.getch()
 
@@ -135,8 +167,6 @@ def main():
                 return # Finaliza o jogo corretamente
                                                     
         while play:
-            save(player, Health, Attack, Ducats, x, y, checkpoint) # Autosave
-            
             draw()
             slow_print("SALVAR E SAIR - ESC")
             draw()
@@ -144,13 +174,17 @@ def main():
             if msvcrt.kbhit():
                 esc_key = msvcrt.getch()
                 if esc_key == b'\x1b': # ESC
-                    save(player, Health, Attack, Ducats, x, y, checkpoint)
-                    clear_screen()
-                    print("Salvando e voltando ao menu...")
-                    time.sleep(2)
-                    play = False
-                    menu = True
+                    checkpoint, play, menu = save_and_return_to_menu(player, Health, Attack, Ducats, x, y, checkpoint)
                     break # Sai do while play
+
+            # Opção de pausa
+            if msvcrt.kbhit():
+                key = msvcrt.getch()
+                if key == b'P': # Tecla de Pausa
+                    if not pause_menu(player, Health, Attack, Ducats, x, y, checkpoint):
+                        menu = True
+                        play = False
+                        break
 
 # Narrativa principal do jogo após iniciar o jogo no play
 def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
