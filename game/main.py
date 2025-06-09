@@ -37,6 +37,7 @@ def draw():
 def main():
     run = True
     menu = True
+    submenu = False
     play = False
     checkpoint = "prologo" # Checkpoint inicial
 
@@ -100,14 +101,22 @@ def main():
                         break
 
                     elif key == b'3':
+                        submenu = True
                         clear_screen()
+                        draw()
                         slow_print("Este jogo foi criado para o projeto final de Raciocínio Algorítmico.")
-                        slow_print("\n> Pressione ESC para voltar ao menu.")
-                        while True:
+                        draw()
+                        slow_print("> Pressione ESC para voltar ao menu.")
+                        draw()
+
+                        while submenu:
                             if msvcrt.kbhit():
                                 sub_key = msvcrt.getch()
                                 if sub_key == b'\x1b': # ESC
+                                    submenu = False
+                                    clear_screen()
                                     break
+                        break
 
                     elif key == b'\x1b': # ESC
                         clear_screen()
