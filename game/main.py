@@ -39,10 +39,14 @@ def main():
     menu = True
     play = False
     about = False
+    key = False
 
     # Status do jogador
     Health = 12
     Attack = 1
+    Ducats = 0
+    x = 0
+    y = 0
 
     cmd_window() # Ajusta a janela do console
     show_intro()
@@ -57,55 +61,66 @@ def main():
             slow_print("4 - SAIR")
             draw()
 
-            if about:
-                slow_print("Este jogo foi criado para um projeto final de Raciocínio Algorítmico.")
-                about = False
-                choice = ""
-                draw()
-
             choice = input("> ")
 
             if choice == "1":
                 clear_screen()
-                player = input("Qual seu nome?\n> ")
+
+                while True:
+                    player = input("Qual seu nome?\n> ").strip()
+                    if player:
+                        break
+                    else:
+                        slow_print("Por favor, insira um nome válido.")
+                        time.sleep(1)
+                        clear_screen()
+
+                slow_print(player)
                 clear_screen()
                 slow_print(f"Bem-vindo, {player}.")
                 time.sleep(3)
+
                 menu = False
                 play = True
                 clear_screen()
-                narrativa(player, Health, Attack) # Começa a narrativa após o jogador iniciar o jogo
+                narrativa(player, Health, Attack, Ducats, x, y, key) # Começa a narrativa após o jogador iniciar o jogo
 
             elif choice == "2":
                 clear_screen()
-                player, Health, Attack = load()
+
+                player, Health, Attack, Ducats, x, y, key = load()
                 slow_print(f"Bem-vindo novamente, {player}.")
                 slow_print(input("> Pressione ENTER para continuar... "))
+                clear_screen()
+
                 menu = False
                 play = True
-                show_intro() # Exibe a introdução após carregar o jogo
-                narrativa(player, Health, Attack) # Começa a narrativa ao carregar o jogo
+                narrativa(player, Health, Attack, Ducats, x, y, key) # Começa a narrativa ao carregar o jogo
 
             elif choice == "3":
                 clear_screen()
-                slow_print("Game project.")
                 menu = False
                 about = True
 
+                slow_print("Este jogo foi criado para um projeto final de Raciocínio Algorítmico.")
+                slow_print("\n> Pressione ESC para voltar ao menu.")
+                
                 while about:
-                    dest = msvcrt.getch()
-                    if dest == b'\x1b':  # ESC
-                        about = False
-                        menu = True
-
+                    if msvcrt.kbhit():
+                        key = msvcrt.getch()
+                        if key == b'\x1b': # ESC
+                            about = False
+                            menu = True
+                            
             elif choice == "4":
                 clear_screen()
+
                 print("Saindo...")
                 time.sleep(2)
                 close_cmd_window()
 
         while play:
-            save(player, Health, Attack)  # Autosave
+            save(player, Health, Attack, Ducats, x, y, key)  # Autosave
 
             draw()
             slow_print("SALVAR E SAIR - ESC")
@@ -116,20 +131,20 @@ def main():
             if dest == b'\x1b':  # ESC
                 play = False
                 menu = True
-                save(player, Health, Attack)
+                save(player, Health, Attack, Ducats, x, y, key)
 
 
 
 # Narrativa principal do jogo após iniciar o jogo no play
 clear_screen()
-def narrativa(player, Health, Attack):
+def narrativa(player, Health, Attack, Ducats, x, y, key):
     time.sleep(3)
-    introducao = [
-        "No castelo de Zollern, vivia o Conde Bauyreth. Ele era um velho homem justo, que tratava seu povo com dignidade.",
+    prologo = [
+        "No castelo de Zollern, vivia o Conde Bauyreth. Ele era um homem justo, que tratava seu povo com dignidade.",
         "O Conde Bauyreth era um homem humilde, que não se importava com casamentos arranjados.",
         "Uma vez, durante um baile da realeza aberto para os camponeses do condado, ele avistou uma jovem garota, Genevieve.",
         "Ele se apaixonou naquele instante. No entanto, ela era filha de um ferreiro.",
-        "Conde Bauyreth logo buscou benção de seu pai, no qual aceitou na hora.",
+        "Conde Bauyreth logo buscou benção de seu pai, o qual aceitou na hora.",
         "Muitas pessoas tinham inveja de Genevieve, almejando seu lugar como Condessa, os nobres sentiam nojo.",
         "Com o tempo, o Conde foi perdendo seu apoio e seus nobres planejavam esquemas de usurpar suas terras e seu título.",
         "Genevieve ficou grávida de um filho de Conde Bauyreth e, no momento do parto, acabou falecendo.",
@@ -137,33 +152,81 @@ def narrativa(player, Health, Attack):
     ]
 
     # Imprime a introdução linha por linha com a função centered_line()
-    for linha in introducao:
+    for linha in prologo:
         slow_print(linha)
         time.sleep(3)
 
     # Após a introdução, limpa a tela
     clear_screen()
 
-    slow_print(f"SENTINELA: Vamos, {player}! Temos que sair daqui!")
-    time.sleep(5)
-    slow_print(f"{player}: Calma Guijnowin, temos que defender o castelo.")
-    time.sleep(5)
-    slow_print(f"GUIJNOWIN: Desculpa, mas você não quis me escutar.")
-    time.sleep(5)
-    slow_print(f"GUIJNOWIN empurra {player}, que acaba caindo da muralha e perde a consciência no rio...")
-    time.sleep(10)
+    slow_print(f"DESCONHECIDO: Vamos, {player}! Temos que sair daqui!")
+    time.sleep(3)
+    slow_print(f"{player}: Calma Guijnowin, ainda temos chance.")
+    time.sleep(3)
+    slow_print("GUIJNOWIN: Chance? Você deveria ir enquanto há tempo! Vai!")
+    time.sleep(3)
+    slow_print(f"{player}: Temos vantagem defensiva, só precisamos esperar os reforços chegarem!")
+    time.sleep(3)
+    slow_print("GUIJNOWIN: Não acredito que os reforços cheguem. Além disso, nós dois não seguraremos o castelo sozinhos.")
+    time.sleep(3)
+    slow_print(f"GUIJNOWIN: {player}, você me agradecerá depois.")
+    time.sleep(3)
+    slow_print(f"{player}: O quê?")
+    time.sleep(3)
+    slow_print(f"GUIJNOWIN dá um chute em seu tórax, que faz você cair da muralha em direção ao rio.")
+    time.sleep(3)
+    slow_print("Você perde consciência.")
+    time.sleep(3)
     clear_screen()
-    time.sleep(2)
+    time.sleep(3)
 
-    slow_print(f"DESCONHECIDO: Você está bem? Como veio parar aqui?")
+    slow_print("DESCONHECIDO: Você está bem? Como veio parar aqui?")
     time.sleep(5)
-    slow_print(f"DESCONHECIDO: Vamos, você precisa repousar.")
+    slow_print("DESCONHECIDO: Vamos, você precisa repousar.")
     time.sleep(3)
     slow_print(f"{player} é carregado para algum lugar...")
     time.sleep(2)
     slow_print(f"{player}: U-ugh.")
-    time.sleep(5)
+    time.sleep(3)
     slow_print(f"{player}: Onde... onde eu estou?")
-    slow_print(f"DESCONHECIDO: Você está a salvo meu amigo, mas me deve explicações.")
+    time.sleep(3)
+    slow_print("DESCONHECIDO: Você está a salvo meu amigo, mas me deve explicações.")
+    time.sleep(3)
+    clear_screen()
+    time.sleep(3)
+
+    introducao = [
+        "Você sente cheiro de comida.",
+        "DESCONHECIDO: Bom dia, levante-se e venha comer.",
+        "Você levanta da cama, vai em direção a mesa e senta na cadeira."
+    ]
+    for linha in introducao:
+        slow_print(linha)
+        time.sleep(3)
+
+    save(player, Health, Attack, Ducats, x, y, key)
+
+    draw()
+    slow_print("1 - QUEM É VOCÊ?")
+    slow_print("2 - ONDE EU ESTOU?")
+    slow_print("ESC - SALVAR E SAIR")
+    draw()
+
+    choice = input("> ")
+    
+    if choice == "1":
+        clear_screen()
+        slow_print(f"{player}: Quem é você?")
+        
+    elif choice == "2":
+        pass
+
+    elif choice == "3":
+        dest = msvcrt.getch()
+        
+        if dest == b'\x1b':  # ESC
+            play = False
+            menu = True
+            save(player, Health, Attack, Ducats, x, y, key)
 
 main()
