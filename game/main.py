@@ -102,18 +102,21 @@ def main():
 
                     elif key == b'3':
                         submenu = True
+                        clear_screen()
+                        draw()
+                        slow_print("Este jogo foi criado para o projeto final de Raciocínio Algorítmico.")
+                        draw()
+                        slow_print("> Pressione ESC para voltar ao menu.")
+                        draw()
+
                         while submenu:
-                            clear_screen()
-                            slow_print("Este jogo foi criado para o projeto final de Raciocínio Algorítmico.")
-                            draw()
-                            slow_print("\n> Pressione ESC para voltar ao menu.")
-                            draw()
-                            
                             if msvcrt.kbhit():
                                 sub_key = msvcrt.getch()
                                 if sub_key == b'\x1b': # ESC
                                     submenu = False
-                                    break # Sai do submenu e volta ao menu principal
+                                    clear_screen()
+                                    break
+                        break
 
                     elif key == b'\x1b': # ESC
                         clear_screen()
