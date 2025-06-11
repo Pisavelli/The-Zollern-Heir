@@ -15,7 +15,7 @@ def cmd_window(cols=130, lines=50):
     screen_height = user32.GetSystemMetrics(1)
 
     # Tamanho da janela do console (aproximado)
-    char_width = 8   # Largura média de um caractere
+    char_width = 8  # Largura média de um caractere
     char_height = 16  # Altura média de um caractere
     window_width = cols * char_width
     window_height = lines * char_height
@@ -34,7 +34,7 @@ def draw():
     slow_print("────────────────────────")
 
 def show_menu():
-    clear_screen() # Limpa a tela antes de desenhar o menu
+    clear_screen()  # Limpa a tela antes de desenhar o menu
     draw()
     slow_print("1 - NOVO JOGO")
     slow_print("2 - CARREGAR JOGO")
@@ -48,7 +48,7 @@ def save_and_return_to_menu(player, Health, Attack, Ducats, x, y, checkpoint):
     clear_screen()
     slow_print("Salvando e voltando ao menu...")
     time.sleep(2)
-    return "menu", False, True # play=False, menu=True
+    return "menu", False, True  # play=False, menu=True
 
 def pause_menu(player, Health, Attack, Ducats, x, y, checkpoint):
     while True:
@@ -64,17 +64,17 @@ def pause_menu(player, Health, Attack, Ducats, x, y, checkpoint):
 
         if msvcrt.kbhit():
             key = msvcrt.getch()
-            if key == b'1': # Continuar
+            if key == b'1':  # Continuar
                 return True
-            elif key == b'2': # Salvar
+            elif key == b'2':  # Salvar
                 save(player, Health, Attack, Ducats, x, y, checkpoint)
                 slow_print("Jogo salvo!")
                 time.sleep(1)
-            elif key == b'3': # Carregar
+            elif key == b'3':  # Carregar
                 player, Health, Attack, Ducats, x, y, checkpoint = load()
                 slow_print(f"Jogo carregado, {player}.")
                 time.sleep(2)
-            elif key == b'\x1b': # ESC
+            elif key == b'\x1b':  # ESC
                 return False  # Retorna ao menu principal
 
 # Função principal do jogo
@@ -83,7 +83,7 @@ def main():
     menu = True
     submenu = False
     play = False
-    checkpoint = "prologo" # Checkpoint inicial
+    checkpoint = "prologo"  # Checkpoint inicial
 
     # Status do jogador
     Health = 12
@@ -92,11 +92,11 @@ def main():
     x = 0
     y = 0
 
-    cmd_window() # Ajusta a janela do console
+    cmd_window()  # Ajusta a janela do console
     show_intro()
 
     while run:
-        while menu: # Exibe o menu
+        while menu:  # Exibe o menu
             show_menu()
 
             # Espera até alguma tecla ser pressionada
@@ -108,35 +108,45 @@ def main():
             if key == b'1':
                 clear_screen()
                 while True:
+                    draw()
                     player = input("Qual seu nome?\n").strip()
+                    draw()
+                    slow_print("ESC - VOLTAR AO MENU")
+                    draw()
+
                     if player:
                         break
+                    elif get_key() == b'\x1b':  # Verifica se ESC foi pressionado
+                        return False  # Retorna ao menu principal
                     else:
                         slow_print("Por favor, insira um nome válido.")
                         time.sleep(1)
                         clear_screen()
 
-                    slow_print(player)
-                    clear_screen()
-                    slow_print(f"Bem-vindo, {player}.")
-                    time.sleep(3)
-                    clear_screen()
+                slow_print(player)
+                clear_screen()
+                slow_print(f"Bem-vindo, {player}.")
+                time.sleep(3)
+                clear_screen()
 
-                    menu = False
-                    play = True
-                    checkpoint, play, menu = narrativa(player, Health, Attack, Ducats, x, y, checkpoint) # Começa a narrativa após o jogador iniciar o jogo
-                    break
+                menu = False
+                play = True
+                checkpoint, play, menu = narrativa(player, Health, Attack, Ducats, x, y, checkpoint)  # Começa a narrativa após o jogador iniciar o jogo
+                break
 
             elif key == b'2':
                 clear_screen()
                 player, Health, Attack, Ducats, x, y, checkpoint = load()
                 slow_print(f"Bem-vindo novamente, {player}.")
-                slow_print(input("> Pressione ENTER para continuar... "))
+                slow_print("> Pressione qualquer tecla para continuar...")
+                while not msvcrt.kbhit():
+                    time.sleep(0.05)
+                msvcrt.getch()
                 clear_screen()
 
                 menu = False
                 play = True
-                checkpoint, play, menu = narrativa(player, Health, Attack, Ducats, x, y, checkpoint) # Começa a narrativa ao carregar o jogo
+                checkpoint, play, menu = narrativa(player, Health, Attack, Ducats, x, y, checkpoint)  # Começa a narrativa ao carregar o jogo
                 break
 
             elif key == b'3':
@@ -151,20 +161,20 @@ def main():
                 while submenu:
                     if msvcrt.kbhit():
                         sub_key = msvcrt.getch()
-                        if sub_key == b'\x1b': # ESC
+                        if sub_key == b'\x1b':  # ESC
                             submenu = False
                             clear_screen()
                             while msvcrt.kbhit():
                                 msvcrt.getch()
                             break
-                break # Força o loop while menu a reiniciar, redesenhando o menu
+                break  # Força o loop while menu a reiniciar, redesenhando o menu
 
             elif key == b'\x1b': # ESC
                 clear_screen()
                 print("Saindo...")
                 time.sleep(2)
                 close_cmd_window()
-                return # Finaliza o jogo corretamente
+                return  # Finaliza o jogo corretamente
             
             else:
                 print("Opção inválida. Tente novamente.")
@@ -177,14 +187,14 @@ def main():
             
             if msvcrt.kbhit():
                 esc_key = msvcrt.getch()
-                if esc_key == b'\x1b': # ESC
+                if esc_key == b'\x1b':  # ESC
                     checkpoint, play, menu = save_and_return_to_menu(player, Health, Attack, Ducats, x, y, checkpoint)
-                    break # Sai do while play
+                    break  # Sai do while play
 
             # Opção de pausa
-            if msvcrt.kbhit():
+            elif msvcrt.kbhit():
                 key = msvcrt.getch()
-                if key == b'P': # Tecla de Pausa
+                if key == b'P':  # Tecla de Pausa
                     if not pause_menu(player, Health, Attack, Ducats, x, y, checkpoint):
                         menu = True
                         play = False
@@ -216,14 +226,14 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
         # Após o prólogo, limpa a tela
         clear_screen()
 
-        checkpoint = "introducao"
+        checkpoint = "introducao_parte1"
         save(player, Health, Attack, Ducats, x, y, checkpoint)
 
-    if checkpoint == "introducao":
+    if checkpoint == "introducao_parte1":
         time.sleep(3)
 
-        # INTRODUÇÃO
-        introducao = [
+        # INTRODUÇÃO - PARTE 1
+        introducao_parte1 = [
             f"DESCONHECIDO: Vamos, {player}! Temos que sair daqui!",
             f"{player}: Calma Guijnowin, ainda temos chance.",
             "GUIJNOWIN: Chance? Você deveria ir enquanto há tempo! Vai!",
@@ -234,8 +244,22 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
             f"GUIJNOWIN dá um chute em seu tórax, que faz você cair da muralha em direção ao rio.",
             "Você perde consciência.",
             ]
+        # Imprime a introdução parte 1 linha por linha
+        for linha in introducao_parte1:
+            slow_print(linha)
+            time.sleep(3)
+
+        # Após a introdução, limpa a tela
         clear_screen()
-        introducao = [
+
+        checkpoint = "introducao_parte2"
+        save(player, Health, Attack, Ducats, x, y, checkpoint)
+    
+    if checkpoint == "introducao_parte2":
+        time.sleep(3)
+
+        # INTRODUÇÃO - PARTE 2
+        introducao_parte2 = [
             "Você ouve algo.",
             "DESCONHECIDO: Você está bem? Como veio parar aqui?",
             "DESCONHECIDO: Vamos, você precisa repousar.",
@@ -245,8 +269,8 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
             "DESCONHECIDO: Você está a salvo meu amigo, mas me deve explicações."
         ]
         
-        # Imprime a introdução linha por linha
-        for linha in introducao:
+        # Imprime a introdução parte 2 linha por linha
+        for linha in introducao_parte2:
             slow_print(linha)
             time.sleep(3)
             
@@ -279,25 +303,26 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
         draw()
         
         while True:
+            pressed = None  # <- Garante que 'pressed' existe sempre
             if msvcrt.kbhit():
-                pressed = msvcrt.getch() # Get a tecla que é pressionada pelo usuário
+                pressed = msvcrt.getch()  # Get a tecla que é pressionada pelo usuário
                 
-                if pressed == b'\x1b': # ESC
+                if pressed == b'\x1b':  # ESC
                     save(player, Health, Attack, Ducats, x, y, checkpoint)
                     clear_screen()
                     print("Salvando e voltando ao menu...")
                     time.sleep(2)
-                    return checkpoint, False, True # play=False, menu=True
+                    return checkpoint, False, True  # play=False, menu=True
             
-            elif pressed == b'1':
-                clear_screen()
-                slow_print(f"{player}: Quem é você?")
-                break
+                elif pressed == b'1':
+                    clear_screen()
+                    slow_print(f"{player}: Quem é você?")
+                    break
             
-            elif pressed == b'2':
-                clear_screen()
-                slow_print(f"{player}: Onde estou?")
-                break
+                elif pressed == b'2':
+                    clear_screen()
+                    slow_print(f"{player}: Onde estou?")
+                    break
 
-    return checkpoint, True, False # Continua jogando
+    return checkpoint, True, False  # Continua jogando
 main()
