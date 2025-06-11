@@ -325,3 +325,9 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
 
     return checkpoint, True, False  # Continua jogando
 main()
+
+
+# CONTINUAR E FOCAR ENREDO;
+# Fazer inventário;
+# Fazer level up;
+# Fazer lojas.
