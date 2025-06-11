@@ -109,15 +109,14 @@ def main():
                 clear_screen()
                 while True:
                     draw()
-                    player = input("Qual seu nome?\n").strip()
-                    draw()
                     slow_print("ESC - VOLTAR AO MENU")
                     draw()
+                    slow_print("Qual seu nome?")
+                    draw()
+                    player = input("> ").strip()
 
                     if player:
                         break
-                    elif get_key() == b'\x1b':  # Verifica se ESC foi pressionado
-                        return False  # Retorna ao menu principal
                     else:
                         slow_print("Por favor, insira um nome válido.")
                         time.sleep(1)
