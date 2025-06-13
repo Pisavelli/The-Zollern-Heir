@@ -84,7 +84,18 @@ def pause_menu(player, Health, Attack, Ducats, x, y, checkpoint):
             slow_print(f"Game loaded, {player}.")
             time.sleep(2)
         elif key == "4":  # BACK TO MENU
-            return False  # Retorna ao menu principal
+            slow_print("Save game before returning to the menu? (Y/N)")
+            while True:
+                choice = input("\n> ").strip().upper()
+                if choice == "Y":
+                    save(player, Health, Attack, Ducats, x, y, checkpoint)
+                    slow_print("Game saved!")
+                    time.sleep(1)
+                    return False
+                elif choice == "N":
+                    slow_print("Returning to menu without saving...")
+                    time.sleep(1)
+                    return False
 
 # Função principal do jogo
 def main():
