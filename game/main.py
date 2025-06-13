@@ -36,17 +36,17 @@ def draw():
 def show_menu():
     clear_screen()  # Limpa a tela antes de desenhar o menu
     draw()
-    slow_print("1 - NOVO JOGO")
-    slow_print("2 - CARREGAR JOGO")
-    slow_print("3 - SOBRE")
+    slow_print("1 - NEW GAME")
+    slow_print("2 - LOAD GAME")
+    slow_print("3 - ABOUT GAME")
     draw()
-    slow_print("ESC - SAIR")
+    slow_print("ESC - LEAVE GAME")
     draw()
 
 def save_and_return_to_menu(player, Health, Attack, Ducats, x, y, checkpoint):
     save(player, Health, Attack, Ducats, x, y, checkpoint) # Save
     clear_screen()
-    slow_print("Salvando e voltando ao menu...")
+    slow_print("SAVING AND RETURNING TO MENU...")
     time.sleep(2)
     return "menu", False, True  # play=False, menu=True
 
@@ -54,22 +54,22 @@ def pause_menu(player, Health, Attack, Ducats, x, y, checkpoint):
     while True:
         clear_screen()
         draw()
-        slow_print("PAUSA")
+        slow_print("PAUSE MENU")
         draw()
-        slow_print("1 - CONTINUAR")
-        slow_print("2 - SALVAR")
-        slow_print("3 - CARREGAR")
-        slow_print("ESC - VOLTAR AO MENU")
+        slow_print("1 - CONTINUE GAME")
+        slow_print("2 - SAVE GAME")
+        slow_print("3 - LOAD GAME")
+        slow_print("ESC - BACK TO MENU")
         draw()
 
-        key = input("Pressione uma tecla: ").strip()
-        if key == '1':  # Continuar
+        key = input("\n> ")
+        if key == "1":  # Continuar
             return True
-        elif key == '2':  # Salvar
+        elif key == "2":  # Salvar
             save(player, Health, Attack, Ducats, x, y, checkpoint)
             slow_print("Jogo salvo!")
             time.sleep(1)
-        elif key == '3':  # Carregar
+        elif key == "3":  # Carregar
             player, Health, Attack, Ducats, x, y, checkpoint = load()
             slow_print(f"Jogo carregado, {player}.")
             time.sleep(2)
