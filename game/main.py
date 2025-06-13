@@ -62,31 +62,29 @@ def pause_menu(player, Health, Attack, Ducats, x, y, checkpoint):
         slow_print("4 - BACK TO MENU")
         draw()
 
-        key = input("\n> ")
-        if key == "1":  # CONTINUE GAME
+        choice = input("> ").strip().upper()
+        if choice == "1":  # CONTINUE GAME
             clear_screen()
             return True
-        elif key == "2":  # SAVE GAME
+        elif choice == "2":  # SAVE GAME
             clear_screen()
             save(player, Health, Attack, Ducats, x, y, checkpoint)
             slow_print("Game saved!")
             time.sleep(1)
-        elif key == "3":  # LOAD GAME
+        elif choice == "3":  # LOAD GAME
             if not os.path.exists("save.txt"):
                 clear_screen()
                 slow_print("No saved game found.")
                 slow_print("> Press any key to continue...")
-                while not msvcrt.kbhit():
-                    time.sleep(0.05)
-                msvcrt.getch()
+                input("> ")  # Espera o usuário pressionar qualquer tecla
                 continue
             player, Health, Attack, Ducats, x, y, checkpoint = load()
             slow_print(f"Game loaded, {player}.")
             time.sleep(2)
-        elif key == "4":  # BACK TO MENU
+        elif choice == "4":  # BACK TO MENU
             slow_print("Save game before returning to the menu? (Y/N)")
             while True:
-                choice = input("\n> ").strip().upper()
+                choice = input("> ").strip().upper()
                 if choice == "Y":
                     save(player, Health, Attack, Ducats, x, y, checkpoint)
                     slow_print("Game saved!")
@@ -123,7 +121,7 @@ def main():
             while not msvcrt.kbhit():
                 time.sleep(0.05)
 
-            key = input("\n> ")  # Lê a tecla pressionada
+            key = input("> ").strip().upper()  # Lê a tecla pressionada
             if key == "":  # Se nenhuma tecla foi pressionada
                 continue
 
@@ -131,13 +129,12 @@ def main():
                 clear_screen()
                 while True:
                     draw()
-                    slow_print("ESC - BACK TO MENU")
+                    slow_print("4 - BACK TO MENU")
                     draw()
                     slow_print("What is your name?")
                     draw()
-                    player = input("> ").strip()
-
-                    if player:
+                    player = input("> ").strip().upper()  # Lê o nome do jogador e converte para maiúsculas
+                    if player and player.isalpha():  # Verifica se o nome é válido (não vazio e contém apenas letras)
                         break
                     else:
                         slow_print("Please enter a valid name.")
@@ -178,57 +175,44 @@ def main():
                 checkpoint, play, menu = narrativa(player, Health, Attack, Ducats, x, y, checkpoint)  # Começa a narrativa ao carregar o jogo
                 break
 
-            elif key == b'3':
-                submenu = True
+            elif key == "3":  # ABOUT GAME
                 clear_screen()
+                submenu = True
                 draw()
-                slow_print("Este jogo foi criado para o projeto final de Raciocínio Algorítmico.")
+                slow_print("This game was created for the final project of Algorithmic Reasoning.")
                 draw()
-                slow_print("> Pressione ESC para voltar ao menu.")
+                slow_print("> Press any key to continue...")
                 draw()
 
                 while submenu:
-                    if msvcrt.kbhit():
-                        sub_key = msvcrt.getch()
-                        if sub_key == b'\x1b':  # ESC
-                            submenu = False
-                            clear_screen()
-                            while msvcrt.kbhit():
-                                msvcrt.getch()
-                            break
-                break  # Força o loop while menu a reiniciar, redesenhando o menu
+                    while not msvcrt.kbhit():
+                        time.sleep(0.05)
+                    msvcrt.getch()
+                    clear_screen()
+                    break  # Força o loop while menu a reiniciar, redesenhando o menu
 
-            elif key == b'\x1b': # ESC
+            elif key == "4":  # BACK TO MENU
                 clear_screen()
-                print("Saindo...")
+                print("Exiting...")
                 time.sleep(2)
                 close_cmd_window()
                 return  # Finaliza o jogo corretamente
             
             else:
-                print("Opção inválida. Tente novamente.")
+                print("Invalid option. Please try again.")
                 time.sleep(2)
                                                     
         while play:
             draw()
-            slow_print("SALVAR E SAIR - ESC")
+            slow_print("4 - SAVE AND EXIT")
             draw()
+
+            key = input("> ").strip().upper()  # Lê a tecla pressionada
+            if key == "":  # Se nenhuma tecla foi pressionada
+                continue
+            if key == "4":  # SAVE AND EXIT
+                checkpoint, play, menu = save_and_return_to_menu(player, Health, Attack, Ducats, x, y, checkpoint)
             
-            if msvcrt.kbhit():
-                esc_key = msvcrt.getch()
-                if esc_key == b'\x1b':  # ESC
-                    checkpoint, play, menu = save_and_return_to_menu(player, Health, Attack, Ducats, x, y, checkpoint)
-                    break  # Sai do while play
-
-            # Opção de pausa
-            elif msvcrt.kbhit():
-                key = msvcrt.getch()
-                if key == b'P':  # Tecla de Pausa
-                    if not pause_menu(player, Health, Attack, Ducats, x, y, checkpoint):
-                        menu = True
-                        play = False
-                        break
-
 # Narrativa principal do jogo após iniciar o jogo no play
 def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
     if checkpoint == "prologue":
