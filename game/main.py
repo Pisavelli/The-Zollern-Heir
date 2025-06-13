@@ -40,7 +40,7 @@ def show_menu():
     slow_print("2 - LOAD GAME")
     slow_print("3 - ABOUT GAME")
     draw()
-    slow_print("ESC - LEAVE GAME")
+    slow_print("4 - LEAVE GAME")
     draw()
 
 def save_and_return_to_menu(player, Health, Attack, Ducats, x, y, checkpoint):
@@ -59,21 +59,31 @@ def pause_menu(player, Health, Attack, Ducats, x, y, checkpoint):
         slow_print("1 - CONTINUE GAME")
         slow_print("2 - SAVE GAME")
         slow_print("3 - LOAD GAME")
-        slow_print("ESC - BACK TO MENU")
+        slow_print("4 - BACK TO MENU")
         draw()
 
         key = input("\n> ")
-        if key == "1":  # Continuar
+        if key == "1":  # CONTINUE GAME
+            clear_screen()
             return True
-        elif key == "2":  # Salvar
+        elif key == "2":  # SAVE GAME
+            clear_screen()
             save(player, Health, Attack, Ducats, x, y, checkpoint)
-            slow_print("Jogo salvo!")
+            slow_print("Game saved!")
             time.sleep(1)
-        elif key == "3":  # Carregar
+        elif key == "3":  # LOAD GAME
+            if not os.path.exists("save.txt"):
+                clear_screen()
+                slow_print("No saved game found.")
+                slow_print("> Press any key to continue...")
+                while not msvcrt.kbhit():
+                    time.sleep(0.05)
+                msvcrt.getch()
+                continue
             player, Health, Attack, Ducats, x, y, checkpoint = load()
-            slow_print(f"Jogo carregado, {player}.")
+            slow_print(f"Game loaded, {player}.")
             time.sleep(2)
-        elif key == b'\x1b':  # ESC
+        elif key == "4":  # BACK TO MENU
             return False  # Retorna ao menu principal
 
 # Função principal do jogo
@@ -82,7 +92,7 @@ def main():
     menu = True
     submenu = False
     play = False
-    checkpoint = "prologo"  # Checkpoint inicial
+    checkpoint = "prologue"  # Checkpoint inicial
 
     # Status do jogador
     Health = 12
@@ -102,28 +112,30 @@ def main():
             while not msvcrt.kbhit():
                 time.sleep(0.05)
 
-            key = msvcrt.getch()
+            key = input("\n> ")  # Lê a tecla pressionada
+            if key == "":  # Se nenhuma tecla foi pressionada
+                continue
 
-            if key == b'1':
+            if key == "1":  # Novo jogo
                 clear_screen()
                 while True:
                     draw()
-                    slow_print("ESC - VOLTAR AO MENU")
+                    slow_print("ESC - BACK TO MENU")
                     draw()
-                    slow_print("Qual seu nome?")
+                    slow_print("What is your name?")
                     draw()
                     player = input("> ").strip()
 
                     if player:
                         break
                     else:
-                        slow_print("Por favor, insira um nome válido.")
+                        slow_print("Please enter a valid name.")
                         time.sleep(1)
                         clear_screen()
 
                 slow_print(player)
                 clear_screen()
-                slow_print(f"Bem-vindo, {player}.")
+                slow_print(f"Welcome, {player}.")
                 time.sleep(3)
                 clear_screen()
 
@@ -132,11 +144,19 @@ def main():
                 checkpoint, play, menu = narrativa(player, Health, Attack, Ducats, x, y, checkpoint)  # Começa a narrativa após o jogador iniciar o jogo
                 break
 
-            elif key == b'2':
+            elif key == "2":  # Carregar jogo
+                if not os.path.exists("save.txt"):
+                    clear_screen()
+                    slow_print("No saved game found.")
+                    slow_print("> Pressione qualquer tecla para continuar...")
+                    while not msvcrt.kbhit():
+                        time.sleep(0.05)
+                    msvcrt.getch()
+                    continue
                 clear_screen()
                 player, Health, Attack, Ducats, x, y, checkpoint = load()
-                slow_print(f"Bem-vindo novamente, {player}.")
-                slow_print("> Pressione qualquer tecla para continuar...")
+                slow_print(f"Welcome back, {player}.")
+                slow_print("> Press any key to continue...")
                 while not msvcrt.kbhit():
                     time.sleep(0.05)
                 msvcrt.getch()
@@ -200,11 +220,11 @@ def main():
 
 # Narrativa principal do jogo após iniciar o jogo no play
 def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
-    if checkpoint == "prologo":
+    if checkpoint == "prologue":
         time.sleep(3)
 
         # PRÓLOGO
-        prologo = [
+        prologue = [
             "No castelo de Zollern, vivia o Conde Bauyreth. Ele era um homem justo, que tratava seu povo com dignidade.",
             "O Conde Bauyreth era um homem humilde, que não se importava com casamentos arranjados.",
             "Uma vez, durante um baile da realeza aberto para os camponeses do condado, ele avistou uma jovem garota, Genevieve.",
@@ -217,21 +237,21 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
             ]
         
         # Imprime o prólogo linha por linha
-        for linha in prologo:
+        for linha in prologue:
             slow_print(linha)
             time.sleep(3)
 
         # Após o prólogo, limpa a tela
         clear_screen()
 
-        checkpoint = "introducao_parte1"
+        checkpoint = "part1"
         save(player, Health, Attack, Ducats, x, y, checkpoint)
 
-    if checkpoint == "introducao_parte1":
+    if checkpoint == "part1":
         time.sleep(3)
 
         # INTRODUÇÃO - PARTE 1
-        introducao_parte1 = [
+        part1 = [
             f"DESCONHECIDO: Vamos, {player}! Temos que sair daqui!",
             f"{player}: Calma Guijnowin, ainda temos chance.",
             "GUIJNOWIN: Chance? Você deveria ir enquanto há tempo! Vai!",
@@ -243,21 +263,21 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
             "Você perde consciência.",
             ]
         # Imprime a introdução parte 1 linha por linha
-        for linha in introducao_parte1:
-            slow_print(linha)
+        for line in part1:
+            slow_print(line)
             time.sleep(3)
 
         # Após a introdução, limpa a tela
         clear_screen()
 
-        checkpoint = "introducao_parte2"
+        checkpoint = "part2"
         save(player, Health, Attack, Ducats, x, y, checkpoint)
-    
-    if checkpoint == "introducao_parte2":
+
+    if checkpoint == "part2":
         time.sleep(3)
 
         # INTRODUÇÃO - PARTE 2
-        introducao_parte2 = [
+        part2 = [
             "Você ouve algo.",
             "DESCONHECIDO: Você está bem? Como veio parar aqui?",
             "DESCONHECIDO: Vamos, você precisa repousar.",
@@ -268,8 +288,8 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
         ]
         
         # Imprime a introdução parte 2 linha por linha
-        for linha in introducao_parte2:
-            slow_print(linha)
+        for line in part2:
+            slow_print(line)
             time.sleep(3)
             
         # Após a introdução, limpa a tela
@@ -289,8 +309,8 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
             ]
         
         # Imprime o início linha por linha
-        for linha in inicio:
-            slow_print(linha)
+        for line in inicio:
+            slow_print(line)
             time.sleep(3)
             
         draw()
