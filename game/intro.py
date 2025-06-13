@@ -22,10 +22,12 @@ def draw():
 
 def wait_for_keypress():
     draw()
-    opcoes = ["> Pressione ENTER para continuar", "> Pressione ESC para sair"]
-    for linha in opcoes:
-        slow_print(linha)
+    choice = ["> Press ENTER to continue", "> Press ESC to exit"]
+    for line in choice:
+        slow_print(line, delay=0.0015)
     draw()
+    while not msvcrt.kbhit():
+        time.sleep(10)
 
     while True:
         key = msvcrt.getch() # Get a tecla que é pressionada pelo usuário

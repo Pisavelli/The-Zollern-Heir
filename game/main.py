@@ -119,7 +119,7 @@ def main():
 
             # Espera até alguma tecla ser pressionada
             while not msvcrt.kbhit():
-                time.sleep(0.05)
+                time.sleep(10)
 
             key = input("> ").strip().upper()  # Lê a tecla pressionada
             if key == "":  # Se nenhuma tecla foi pressionada
@@ -156,9 +156,9 @@ def main():
                 if not os.path.exists("save.txt"):
                     clear_screen()
                     slow_print("No saved game found.")
-                    slow_print("> Pressione qualquer tecla para continuar...")
+                    slow_print("> Press any key to continue...")
                     while not msvcrt.kbhit():
-                        time.sleep(0.05)
+                        time.sleep(10)
                     msvcrt.getch()
                     continue
                 clear_screen()
@@ -166,7 +166,7 @@ def main():
                 slow_print(f"Welcome back, {player}.")
                 slow_print("> Press any key to continue...")
                 while not msvcrt.kbhit():
-                    time.sleep(0.05)
+                    time.sleep(10)
                 msvcrt.getch()
                 clear_screen()
 
