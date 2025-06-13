@@ -62,20 +62,19 @@ def pause_menu(player, Health, Attack, Ducats, x, y, checkpoint):
         slow_print("ESC - VOLTAR AO MENU")
         draw()
 
-        if msvcrt.kbhit():
-            key = msvcrt.getch()
-            if key == b'1':  # Continuar
-                return True
-            elif key == b'2':  # Salvar
-                save(player, Health, Attack, Ducats, x, y, checkpoint)
-                slow_print("Jogo salvo!")
-                time.sleep(1)
-            elif key == b'3':  # Carregar
-                player, Health, Attack, Ducats, x, y, checkpoint = load()
-                slow_print(f"Jogo carregado, {player}.")
-                time.sleep(2)
-            elif key == b'\x1b':  # ESC
-                return False  # Retorna ao menu principal
+        key = input("Pressione uma tecla: ").strip()
+        if key == '1':  # Continuar
+            return True
+        elif key == '2':  # Salvar
+            save(player, Health, Attack, Ducats, x, y, checkpoint)
+            slow_print("Jogo salvo!")
+            time.sleep(1)
+        elif key == '3':  # Carregar
+            player, Health, Attack, Ducats, x, y, checkpoint = load()
+            slow_print(f"Jogo carregado, {player}.")
+            time.sleep(2)
+        elif key == b'\x1b':  # ESC
+            return False  # Retorna ao menu principal
 
 # Função principal do jogo
 def main():
