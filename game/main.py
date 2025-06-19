@@ -1,7 +1,128 @@
-import os, ctypes, time, msvcrt
-from intro import slow_print, show_intro, clear_screen, close_cmd_window
+import os, ctypes, time, msvcrt, sys
 from save import save, load
 
+#  Função que carrega a tela do jogo, limpa a tela e imprime o título do jogo
+def clear_screen(): # Limpa a tela
+    os.system("cls" if os.name == "nt" else "clear")
+
+def slow_print(text, delay=0.02): # Efeito de escrita
+    lines = text.split("\n")
+    for line in lines:
+        for char in line:
+            print(char, end="", flush=True)
+            time.sleep(delay)
+        print()
+
+def close_cmd_window(): # Fecha completamente a janela do CMD (Windows)
+    kernel32 = ctypes.windll.kernel32
+    user32 = ctypes.windll.user32
+    hWnd = kernel32.GetConsoleWindow()
+    user32.PostMessageW(hWnd, 0x0010, 0, 0)  # Envia mensagem WM_CLOSE (fechar janela)
+
+def draw():
+    slow_print("────────────────────────")
+
+def wait_for_keypress():
+    draw()
+    choice = ["> Press ENTER to continue", "> Press ESC to exit"]
+    for line in choice:
+        slow_print(line, delay=0.0015)
+    draw()
+    while not msvcrt.kbhit():
+        time.sleep(10)
+
+    while True:
+        key = msvcrt.getch() # Get a tecla que é pressionada pelo usuário
+        if key == b'\r':  # ENTER
+            return True
+        elif key == b'\x1b':  # ESC
+            clear_screen()
+            print("Saindo...")
+            time.sleep(2)
+            close_cmd_window()
+
+def show_intro(): # Intro com o nome do jogo The Zollern Heir
+    clear_screen()
+    
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    banner_path = os.path.join(base_path, "assets", "banner.txt")
+
+    try:
+        with open(banner_path, "r", encoding="utf-8") as f:
+            title_art = f.read()
+    except FileNotFoundError:
+        print(f"Erro: Arquivo '{banner_path}' não encontrado!")
+        time.sleep(2)
+        sys.exit()
+
+    slow_print(title_art, delay=0.0015)
+
+    if wait_for_keypress():
+        clear_screen()
+
+if __name__ == "__main__":
+    show_intro()
+
+#  Funções que salvam e carregam o jogo
+def save(player, Health, Attack, Ducats, x, y, checkpoint):
+    # Obtém o diretório onde o script está sendo executado
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Define o diretório de salvamento dentro da pasta 'save' do jogo
+    save_dir = os.path.join(base_dir, "save")
+
+    # Verifica se a pasta 'save' existe, se não, cria
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+
+    # Define o caminho completo do arquivo de salvamento
+    file_path = os.path.join(save_dir, "load.txt")
+
+    # Lista com os dados a serem salvos
+    list = [
+        player,
+        str(Health),
+        str(Attack),
+        str(Ducats),
+        str(x),
+        str(y),
+        str(checkpoint)
+    ]
+
+    # Abre o arquivo e escreve os dados
+    with open(file_path, "w") as f:
+        for item in list:
+            f.write(item + "\n")
+
+def load():
+    # Obtém o diretório onde o script está sendo executado
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+
+    # Define o caminho para a pasta 'save' e o arquivo 'load.txt'
+    save_dir = os.path.join(base_dir, "save")
+    file_path = os.path.join(save_dir, "load.txt")
+
+    # Verifica se o arquivo de salvamento existe
+    if not os.path.exists(file_path):
+        print("Arquivo de salvamento não encontrado!")
+        return None, None, None  # Retorna valores padrões se o arquivo não existir
+
+    # Abre o arquivo de salvamento e lê os dados
+    with open(file_path, "r") as f:
+        load_list = f.readlines()
+
+    # Processa os dados lidos
+    player = load_list[0].strip()
+    Health = int(load_list[1].strip())
+    Attack = int(load_list[2].strip())
+    Ducats = int(load_list[3].strip())
+    x = int(load_list[4].strip())
+    y = int(load_list[5].strip())
+    checkpoint = load_list[6].strip()
+
+    return player, Health, Attack, Ducats, x, y, checkpoint
+
+#  Função que ajusta o tamanho da janela do console no Windows
 def cmd_window(cols=130, lines=50):
     # Define o tamanho da janela do console
     os.system(f"mode con: cols={cols} lines={lines}")
@@ -30,9 +151,11 @@ def cmd_window(cols=130, lines=50):
     # Move a janela para o centro da tela
     ctypes.windll.user32.MoveWindow(hWnd, x, y, window_width, window_height, True)
 
+#  Função que desenha a borda dos menus
 def draw():
     slow_print("────────────────────────")
 
+#  Função que exibe o menu principal do jogo
 def show_menu():
     clear_screen()  # Limpa a tela antes de desenhar o menu
     draw()
@@ -43,6 +166,7 @@ def show_menu():
     slow_print("4 - LEAVE GAME")
     draw()
 
+#  Função que salva o jogo e retorna ao menu
 def save_and_return_to_menu(player, Health, Attack, Ducats, x, y, checkpoint):
     save(player, Health, Attack, Ducats, x, y, checkpoint) # Save
     clear_screen()
@@ -50,6 +174,7 @@ def save_and_return_to_menu(player, Health, Attack, Ducats, x, y, checkpoint):
     time.sleep(2)
     return "menu", False, True  # play=False, menu=True
 
+#  Função que exibe o menu de pausa do jogo
 def pause_menu(player, Health, Attack, Ducats, x, y, checkpoint):
     while True:
         clear_screen()
@@ -186,7 +311,7 @@ def main():
 
                 while submenu:
                     while not msvcrt.kbhit():
-                        time.sleep(0.05)
+                        time.sleep(1)
                     msvcrt.getch()
                     clear_screen()
                     break  # Força o loop while menu a reiniciar, redesenhando o menu
@@ -239,14 +364,14 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
         # Após o prólogo, limpa a tela
         clear_screen()
 
-        checkpoint = "part1"
+        checkpoint = "intro1"
         save(player, Health, Attack, Ducats, x, y, checkpoint)
 
-    if checkpoint == "part1":
+    if checkpoint == "intro1":
         time.sleep(3)
 
         # INTRODUÇÃO - PARTE 1
-        part1 = [
+        intro1 = [
             f"DESCONHECIDO: Vamos, {player}! Temos que sair daqui!",
             f"{player}: Calma Guijnowin, ainda temos chance.",
             "GUIJNOWIN: Chance? Você deveria ir enquanto há tempo! Vai!",
@@ -258,21 +383,21 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
             "Você perde consciência.",
             ]
         # Imprime a introdução parte 1 linha por linha
-        for line in part1:
+        for line in intro1:
             slow_print(line)
             time.sleep(3)
 
         # Após a introdução, limpa a tela
         clear_screen()
 
-        checkpoint = "part2"
+        checkpoint = "intro2"
         save(player, Health, Attack, Ducats, x, y, checkpoint)
 
-    if checkpoint == "part2":
+    if checkpoint == "intro2":
         time.sleep(3)
 
         # INTRODUÇÃO - PARTE 2
-        part2 = [
+        intro2 = [
             "Você ouve algo.",
             "DESCONHECIDO: Você está bem? Como veio parar aqui?",
             "DESCONHECIDO: Vamos, você precisa repousar.",
@@ -283,36 +408,36 @@ def narrativa(player, Health, Attack, Ducats, x, y, checkpoint):
         ]
         
         # Imprime a introdução parte 2 linha por linha
-        for line in part2:
+        for line in intro2:
             slow_print(line)
             time.sleep(3)
             
         # Após a introdução, limpa a tela
         clear_screen()
 
-        checkpoint =  "inicio"
+        checkpoint =  "part1"
         save(player, Health, Attack, Ducats, x, y, checkpoint)
 
-    if checkpoint == "inicio":
+    if checkpoint == "part1":
         time.sleep(3)
 
         # INÍCIO DO JOGO
-        inicio = [
+        part1 = [
             "Você sente cheiro de comida.",
             "DESCONHECIDO: Bom dia, levante-se e venha comer.",
             "Você levanta da cama, vai em direção a mesa e senta na cadeira."
             ]
         
         # Imprime o início linha por linha
-        for line in inicio:
+        for line in part1:
             slow_print(line)
             time.sleep(3)
             
         draw()
-        slow_print("1 - QUEM É VOCÊ?")
-        slow_print("2 - ONDE EU ESTOU?")
+        slow_print("1 - WHO ARE YOU?")
+        slow_print("2 - WHERE AM I?")
         draw()
-        slow_print("ESC - SALVAR E VOLTAR AO MENU")
+        slow_print("3 - SAVE AND RETURN TO MENU")
         draw()
         
         while True:
