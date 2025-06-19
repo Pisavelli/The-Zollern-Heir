@@ -1,5 +1,33 @@
 import os, ctypes, time, msvcrt, sys
-from save import save, load
+
+#  Função que ajusta o tamanho da janela do console no Windows
+def cmd_window(cols=130, lines=50):
+    # Define o tamanho da janela do console
+    os.system(f"mode con: cols={cols} lines={lines}")
+
+    # Acessa funções do Windows
+    user32 = ctypes.windll.user32
+    kernel32 = ctypes.windll.kernel32
+
+    # Tamanho da tela (resolução do monitor)
+    screen_width = user32.GetSystemMetrics(0)
+    screen_height = user32.GetSystemMetrics(1)
+
+    # Tamanho da janela do console (aproximado)
+    char_width = 8  # Largura média de um caractere
+    char_height = 16  # Altura média de um caractere
+    window_width = cols * char_width
+    window_height = lines * char_height
+
+    # Posição no centro
+    x = int((screen_width - window_width) / 2)
+    y = int((screen_height - window_height) / 2)
+
+    # Obtém handle da janela do console
+    hWnd = kernel32.GetConsoleWindow()
+
+    # Move a janela para o centro da tela
+    ctypes.windll.user32.MoveWindow(hWnd, x, y, window_width, window_height, True)
 
 #  Função que carrega a tela do jogo, limpa a tela e imprime o título do jogo
 def clear_screen(): # Limpa a tela
@@ -121,35 +149,6 @@ def load():
     checkpoint = load_list[6].strip()
 
     return player, Health, Attack, Ducats, x, y, checkpoint
-
-#  Função que ajusta o tamanho da janela do console no Windows
-def cmd_window(cols=130, lines=50):
-    # Define o tamanho da janela do console
-    os.system(f"mode con: cols={cols} lines={lines}")
-
-    # Acessa funções do Windows
-    user32 = ctypes.windll.user32
-    kernel32 = ctypes.windll.kernel32
-
-    # Tamanho da tela (resolução do monitor)
-    screen_width = user32.GetSystemMetrics(0)
-    screen_height = user32.GetSystemMetrics(1)
-
-    # Tamanho da janela do console (aproximado)
-    char_width = 8  # Largura média de um caractere
-    char_height = 16  # Altura média de um caractere
-    window_width = cols * char_width
-    window_height = lines * char_height
-
-    # Posição no centro
-    x = int((screen_width - window_width) / 2)
-    y = int((screen_height - window_height) / 2)
-
-    # Obtém handle da janela do console
-    hWnd = kernel32.GetConsoleWindow()
-
-    # Move a janela para o centro da tela
-    ctypes.windll.user32.MoveWindow(hWnd, x, y, window_width, window_height, True)
 
 #  Função que desenha a borda dos menus
 def draw():
